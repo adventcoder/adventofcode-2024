@@ -1,10 +1,18 @@
-from aoc import get_input
+from aoc import get_input, submit
 from collections import Counter
 
-xs, ys = zip(*[map(int, line.split()) for line in get_input(1).splitlines()])
+def parse_lists(input):
+    rows = [map(int, line.split()) for line in input.splitlines()]
+    return zip(*rows)
 
-print('1.', sum(abs(x - y) for x, y in zip(sorted(xs), sorted(ys))))
+def total_distance(xs, ys):
+    return sum(abs(x - y) for x, y in zip(sorted(xs), sorted(ys)))
 
-x_counts = Counter(xs)
-y_counts = Counter(ys)
-print('2.', sum(n*x_counts[n]*y_counts[n] for n in x_counts.keys() & y_counts.keys()))
+def similarity_score(xs, ys):
+    x_counts = Counter(xs)
+    y_counts = Counter(ys)
+    return sum(n*x_counts[n]*y_counts[n] for n in x_counts.keys() & y_counts.keys())
+
+xs, ys = parse_lists(get_input(1))
+submit(total_distance(xs, ys))
+submit(similarity_score(xs, ys))
