@@ -1,3 +1,4 @@
+from typing import *
 
 def table(input, dtype=None):
     rows = []
@@ -10,5 +11,13 @@ def table(input, dtype=None):
     return rows
 
 def sliding_window(xs, size):
-    for i in range(len(xs) - size + 1):
-        yield xs[i : i + size]
+    if isinstance(xs, Sequence):
+        for i in range(len(xs) - size + 1):
+            yield xs[i : i + size]
+    else:
+        it = iter(xs)
+        window = tuple(next(it) for _ in range(size))
+        yield window
+        for x in it:
+            window = window[1:] + (x, )
+            yield window
