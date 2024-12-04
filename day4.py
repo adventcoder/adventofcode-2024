@@ -1,31 +1,31 @@
 from aoc import get_input, submit
 
-def match(grid, x, y, dx, dy, target):
-    s = ''.join(grid[y + i*dy][x + i*dx] for i in range(len(target)))
-    return s == target or s[::-1] == target
+def get(grid, x, y, dx, dy, n):
+    cs = []
+    while 0 <= y < len(grid) and 0 <= x < len(grid[y]) and len(cs) < n:
+        cs.append(grid[y][x])
+        x += dx
+        y += dy
+    return ''.join(cs)
 
-def search(grid, s):
+def search_xmas(grid):
     count = 0
     for y in range(len(grid)):
-        for x in range(len(grid[y]) - len(s) + 1):
-            count += match(grid, x, y, 1, 0, s)
-    for y in range(len(grid) - len(s) + 1):
         for x in range(len(grid[y])):
-            count += match(grid, x, y, 0, 1, s)
-    for y in range(len(grid) - len(s) + 1):
-        for x in range(len(grid[y]) - len(s) + 1):
-            count += match(grid, x, y, 1, 1, s)
-            count += match(grid, x + len(s) - 1, y, -1, 1, s)
+            if grid[y][x] == 'X':
+                for dx, dy in [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]:
+                    if get(grid, x + dx, y + dy, dx, dy, 3) == 'MAS':
+                        count += 1
     return count
 
-def search_x(grid, s):
+def search_x_mas(grid):
     count = 0
-    for y in range(len(grid) - len(s) + 1):
-        for x in range(len(grid[y]) - len(s) + 1):
-            count += match(grid, x, y, 1, 1, s) and match(grid, x + len(s) - 1, y, -1, 1, s)
+    for y in range(1, len(grid) - 1):
+        for x in range(1, len(grid[y]) - 1):
+            if grid[y][x] == 'A' and { grid[y-1][x-1], grid[y+1][x+1] } == { 'M', 'S' } and { grid[y-1][x+1], grid[y+1][x-1] } == { 'M', 'S' }:
+                count += 1
     return count
-
 
 grid = get_input(4).splitlines()
-submit(search(grid, 'XMAS'))
-submit(search_x(grid, 'MAS'))
+submit(search_xmas(grid))
+submit(search_x_mas(grid))
