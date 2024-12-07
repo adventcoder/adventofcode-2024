@@ -1,4 +1,4 @@
-from typing import *
+from collections.abc import Sequence
 
 def table(input, dtype=None):
     rows = []

@@ -42,10 +42,7 @@ def submit(answer):
     start_time = time.perf_counter()
 
 def format_time(time):
-    s = int(time)
-    ms = (time - s) * 1000
-    parts = []
-    if s:
-        parts.append('%d s' % s)
-    parts.append('%.3f ms' % ms)
-    return ' '.join(parts)
+    if int(time) == 0:
+        return '%.3f ms' % (time * 1000)
+    else:
+        return '%.3f s' % time
