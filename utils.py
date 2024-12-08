@@ -1,4 +1,5 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 def table(input, dtype=None):
     rows = []
@@ -21,3 +22,20 @@ def sliding_window(xs, size):
         for x in it:
             window = window[1:] + (x, )
             yield window
+
+@dataclass(frozen=True)
+class Vector:
+    x: int
+    y: int
+
+    def __abs__(self):
+        return abs(self.x) + abs(self.y)
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return Vector(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, n):
+        return Vector(self.x*n, self.y*n)
