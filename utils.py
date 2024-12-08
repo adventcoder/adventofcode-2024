@@ -39,3 +39,16 @@ class Vector:
 
     def __mul__(self, n):
         return Vector(self.x*n, self.y*n)
+
+    def rot90(self, n=1):
+        # y axis points downwards -> clockwise
+        # y axis points upwards -> anticlockwise
+        match n % 4:
+            case 0:
+                return self
+            case 1:
+                return Vector(-self.y, self.x)
+            case 2:
+                return Vector(-self.x, -self.y)
+            case 3:
+                return Vector(self.y, -self.x)
