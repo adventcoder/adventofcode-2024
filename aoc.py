@@ -12,6 +12,7 @@ def get_input(day):
     if input is None:
         input = get_server_input(day)
         put_local_input(day, input)
+    print(f'Day {day}')
     global start_time, part
     start_time = time.perf_counter()
     part = 1
@@ -37,12 +38,14 @@ def put_local_input(day, input):
 def submit(answer):
     global start_time, part
     solve_time = time.perf_counter() - start_time
-    print(f'{part}.', answer, f'[{format_time(solve_time)}]')
+    print()
+    print(f'    - Part {part}: {answer}')
+    print(f'      Took {format_time(solve_time)}')
     part += 1
     start_time = time.perf_counter()
 
 def format_time(time):
     if int(time) == 0:
-        return '%.3f ms' % (time * 1000)
+        return '%.3fms' % (time * 1000)
     else:
-        return '%.3f s' % time
+        return '%.3fs' % time

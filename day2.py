@@ -8,6 +8,7 @@ def safe(record):
     return (increasing or decreasing) and diffs
 
 def safe_with_dampener(record):
+    #TODO: brute force
     return any(safe(record[:i] + record[i+1:]) for i in range(len(record)))
 
 records = table(get_input(2), int)
