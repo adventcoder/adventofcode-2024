@@ -38,9 +38,9 @@ def put_local_input(day, input):
 def submit(answer):
     global start_time, part
     solve_time = time.perf_counter() - start_time
-    print()
     print(f'    - Part {part}: {answer}')
     print(f'      Took {format_time(solve_time)}')
+    print()
     part += 1
     start_time = time.perf_counter()
 

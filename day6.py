@@ -1,5 +1,5 @@
 from aoc import get_input, submit
-from utils import Vector
+from utils import Vector2D
 
 #TODO: super slow
 
@@ -10,7 +10,7 @@ def find_start(grid):
     for y, line in enumerate(grid):
         for x, c in enumerate(line):
             if c == '^':
-                return Vector(x, y), Vector(0, -1)
+                return Vector2D(x, y), Vector2D(0, -1)
 
 def patrol(grid):
     pos, dir = find_start(grid)

@@ -1,7 +1,7 @@
 from aoc import get_input, submit
 from collections import defaultdict
 from itertools import combinations
-from utils import Vector
+from utils import Vector2D
 
 def in_bounds(grid, pos):
     return 0 <= pos.y < len(grid) and 0 <= pos.x < len(grid[pos.y])
@@ -11,7 +11,7 @@ def find_antennae(grid):
     for y, line in enumerate(grid):
         for x, c in enumerate(line):
             if c != '.':
-                antennae[c].add(Vector(x, y))
+                antennae[c].add(Vector2D(x, y))
     return antennae
 
 def antinodes1(grid, antennae):

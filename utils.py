@@ -1,5 +1,6 @@
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
+import re
 
 def table(input, dtype=None):
     rows = []
@@ -11,11 +12,14 @@ def table(input, dtype=None):
             rows.append(list(map(dtype, row)))
     return rows
 
+def ints(s):
+    return list(map(int, re.findall(r'[+-]?[0-9]+', s)))
+
 def sliding_window(xs, size):
     if isinstance(xs, Sequence):
         for i in range(len(xs) - size + 1):
             yield xs[i : i + size]
-    else:
+    elif isinstance(xs, Iterable):
         it = iter(xs)
         window = tuple(next(it) for _ in range(size))
         yield window
@@ -24,7 +28,7 @@ def sliding_window(xs, size):
             yield window
 
 @dataclass(frozen=True)
-class Vector:
+class Vector2D:
     x: int
     y: int
 
@@ -32,13 +36,13 @@ class Vector:
         return abs(self.x) + abs(self.y)
 
     def __add__(self, other):
-        return Vector(self.x + other.x, self.y + other.y)
+        return Vector2D(self.x + other.x, self.y + other.y)
 
     def __sub__(self, other):
-        return Vector(self.x - other.x, self.y - other.y)
+        return Vector2D(self.x - other.x, self.y - other.y)
 
     def __mul__(self, n):
-        return Vector(self.x*n, self.y*n)
+        return Vector2D(self.x*n, self.y*n)
 
     def rot90(self, n=1):
         # y axis points downwards -> clockwise
@@ -47,8 +51,14 @@ class Vector:
             case 0:
                 return self
             case 1:
-                return Vector(-self.y, self.x)
+                return Vector2D(-self.y, self.x)
             case 2:
-                return Vector(-self.x, -self.y)
+                return Vector2D(-self.x, -self.y)
             case 3:
-                return Vector(self.y, -self.x)
+                return Vector2D(self.y, -self.x)
+
+    def dot(self, other):
+        return self.x*other.x + self.y*other.y
+
+    def cross(self, other):
+        return self.x*other.y - self.y*other.x
