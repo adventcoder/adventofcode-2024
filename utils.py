@@ -1,6 +1,7 @@
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 import re
+import operator
 
 def table(input, dtype=None):
     rows = []
@@ -32,6 +33,10 @@ class Vector2D:
     x: int
     y: int
 
+    @staticmethod
+    def parse(s, sep=','):
+        return Vector2D(*map(int, s.split(sep)))
+
     def __abs__(self):
         return abs(self.x) + abs(self.y)
 
@@ -41,8 +46,23 @@ class Vector2D:
     def __sub__(self, other):
         return Vector2D(self.x - other.x, self.y - other.y)
 
-    def __mul__(self, n):
-        return Vector2D(self.x*n, self.y*n)
+    def __mul__(self, other):
+        if isinstance(other, Vector2D):
+            return Vector2D(self.x*other.x, self.y*other.y)
+        else:
+            return Vector2D(self.x*other, self.y*other)
+
+    def __floordiv__(self, other):
+        if isinstance(other, Vector2D):
+            return Vector2D(self.x//other.x, self.y//other.y)
+        else:
+            return Vector2D(self.x//other, self.y//other)
+
+    def __mod__(self, other):
+        if isinstance(other, Vector2D):
+            return Vector2D(self.x%other.x, self.y%other.y)
+        else:
+            return Vector2D(self.x%other, self.y%other)
 
     def rot90(self, n=1):
         # y axis points downwards -> clockwise
