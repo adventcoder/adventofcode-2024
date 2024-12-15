@@ -1,8 +1,7 @@
 from aoc import get_input, submit
 from utils import Vector2D
 from dataclasses import dataclass
-from math import prod
-from itertools import count
+from math import prod, lcm
 
 @dataclass
 class Bot:
@@ -36,21 +35,7 @@ def safety_factor(bots, t, size):
             counts[i] += 1
     return prod(counts)
 
-def space(bots, t, size):
-    grid = [['.'] * size.x for _ in range(size.y)]
-    for bot in bots:
-        pos = (bot.pos + bot.vel * t) % size
-        grid[pos.y][pos.x] = '#'
-    return grid
-
-def easter_egg(grid):
-    # look for 31 adjacent bots since that's the width of the picture
-    for row in grid:
-        if '#' * 31 in ''.join(row):
-            return True
-    return False
-
 size = Vector2D(101, 103)
 bots = [parse_bot(line) for line in get_input(14).splitlines()]
 submit(safety_factor(bots, 100, size))
-submit(next(t for t in count() if easter_egg(space(bots, t, size))))
+submit(min(range(lcm(size.x, size.y)), key=lambda t: safety_factor(bots, t, size)))
