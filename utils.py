@@ -1,7 +1,6 @@
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 import re
-import operator
 
 def table(input, dtype=None):
     rows = []
@@ -28,7 +27,7 @@ def sliding_window(xs, size):
             window = window[1:] + (x, )
             yield window
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, order=True)
 class Vector2D:
     x: int
     y: int
