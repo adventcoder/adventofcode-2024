@@ -32,10 +32,6 @@ class Vector2D:
     x: int
     y: int
 
-    @staticmethod
-    def parse(s, sep=','):
-        return Vector2D(*map(int, s.split(sep)))
-
     def __abs__(self):
         return abs(self.x) + abs(self.y)
 
@@ -81,3 +77,10 @@ class Vector2D:
 
     def cross(self, other):
         return self.x*other.y - self.y*other.x
+
+    @staticmethod
+    def parse(s, sep=','):
+        return Vector2D(*map(int, s.split(sep)))
+
+    def __str__(self):
+        return ','.join((str(self.x), str(self.y)))
