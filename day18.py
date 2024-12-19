@@ -21,7 +21,18 @@ def find_path(walls, end):
         steps += 1
     return None
 
+def bsearch(walls, end):
+    lower = 1024        # INVARIANT: find_path(set(walls[:lower]), end) is not None
+    upper = len(walls)  # INVARIANT: find_path(set(walls[:upper]), end) is None
+    while upper - lower > 1:
+        mid = (lower + upper) // 2
+        if find_path(set(walls[:mid]), end) is None:
+            upper = mid
+        else:
+            lower = mid
+    return walls[lower]
+
 walls = [Vector2D.parse(line) for line in get_input(18).splitlines()]
 end = Vector2D(70, 70)
 submit(find_path(set(walls[:1024]), end))
-submit(next(str(walls[n-1]) for n in range(len(walls)) if find_path(set(walls[:n]), end) is None))
+submit(bsearch(walls, end))
