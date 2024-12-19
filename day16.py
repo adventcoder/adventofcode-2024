@@ -1,7 +1,35 @@
 from aoc import get_input, submit
 from utils import Vector2D
 import heapq
-from math import inf
+
+def find_best_paths(grid):
+    start_pos = find_pos(grid, 'S')
+    end_pos = find_pos(grid, 'E')
+    start = (start_pos, Vector2D(1, 0))
+    best_scores = { start: 0 }
+    pred = { start: {} }
+    queue = [(0, start)]
+    best_score = None
+    tiles = set()
+    while queue:
+        score, state = heapq.heappop(queue)
+        if score > best_scores[state]:
+            continue
+        if best_score is not None and score > best_score:
+            break
+        if state[0] == end_pos:
+            best_score = score
+            backtrack(state, pred, tiles)
+        else:
+            for new_state, delta in step(grid, state):
+                new_score = score + delta
+                if new_state not in best_scores or new_score < best_scores[new_state]:
+                    best_scores[new_state] = new_score
+                    pred[new_state] = { state }
+                    heapq.heappush(queue, (new_score, new_state))
+                elif new_state in best_scores and new_score == best_scores[new_state]:
+                    pred[new_state].add(state)
+    return best_score, tiles
 
 def find_pos(grid, target):
     for y, row in enumerate(grid):
@@ -9,37 +37,24 @@ def find_pos(grid, target):
             if c == target:
                 return Vector2D(x, y)
 
-def step(grid, pos, dir):
-    for i in (-1, 0, 1):
-        new_dir = dir.rot90(i)
-        new_pos = pos + new_dir
-        if grid[new_pos.y][new_pos.x] != '#':
-            yield new_pos, new_dir, abs(i)*1000 + 1
+def step(grid, state):
+    pos, dir = state
+    new_pos = pos + dir
+    if grid[new_pos.y][new_pos.x] != '#':
+        yield (new_pos, dir), 1
+    yield (pos, dir.rot90(-1)), 1000
+    yield (pos, dir.rot90(1)), 1000
 
-def find_best_path(grid):
-    start_pos = find_pos(grid, 'S')
-    start_dir = Vector2D(0, 1)
-    end_pos = find_pos(grid, 'E')
-    best_scores = { (start_pos, start_dir): 0 }
-    queue = [(0, start_pos, start_dir, (start_pos, ))]
-    while queue:
-        score, pos, dir, path = heapq.heappop(queue)
-        # this check is needed since we don't remove from the heap when we find better paths
-        if score > best_scores[(pos, dir)]:
-            continue
-        if pos == end_pos:
-            # new_grid = [list(row) for row in grid]
-            # for pos in path:
-            #     new_grid[pos.y][pos.x] = 'O'
-            # for row in new_grid:
-            #     print(''.join(row))
-            return score
-        for new_pos, new_dir, delta in step(grid, pos, dir):
-            new_score = score + delta
-            new_path = path + (new_pos, )
-            if new_score < best_scores.get((new_pos, new_dir), inf):
-                best_scores[(new_pos, new_dir)] = new_score
-                heapq.heappush(queue, (new_score, new_pos, new_dir, new_path))
+def backtrack(state, pred, tiles):
+    tiles.add(state[0])
+    for prev_state in pred[state]:
+        backtrack(prev_state, pred, tiles)
 
-grid = get_input(16).splitlines()
-submit(find_best_path(grid))
+grid = [list(line) for line in get_input(16).splitlines()]
+best_score, tiles = find_best_paths(grid)
+# for tile in tiles:
+#     grid[tile.y][tile.x] = 'O'
+# for row in grid:
+#     print(''.join(row))
+submit(best_score)
+submit(len(tiles))
