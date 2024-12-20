@@ -42,8 +42,8 @@ def step(grid, state):
     new_pos = pos + dir
     if grid[new_pos.y][new_pos.x] != '#':
         yield (new_pos, dir), 1
-    yield (pos, dir.rot90(-1)), 1000
-    yield (pos, dir.rot90(1)), 1000
+    yield (pos, dir.rotate_left()), 1000
+    yield (pos, dir.rotate_right()), 1000
 
 def backtrack(state, pred, tiles):
     tiles.add(state[0])

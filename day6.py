@@ -21,7 +21,7 @@ def patrol(grid):
         if not in_bounds(grid, new_pos):
             return path
         if grid[new_pos.y][new_pos.x] == '#':
-            dir = dir.rot90()
+            dir = dir.rotate_right()
         else:
             pos = new_pos
             path.add(pos)

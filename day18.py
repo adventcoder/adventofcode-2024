@@ -1,8 +1,6 @@
 from aoc import get_input, submit
 from utils import Vector2D
 
-dirs = [Vector2D(0, -1), Vector2D(1, 0), Vector2D(0, 1), Vector2D(-1, 0)]
-
 def find_path(walls, end):
     closed = set()
     curr = [Vector2D(0, 0)]
@@ -12,8 +10,7 @@ def find_path(walls, end):
         for pos in curr:
             if pos == end:
                 return steps
-            for dir in dirs:
-                new_pos = pos + dir
+            for new_pos in pos.neighbours():
                 if 0 <= new_pos.x <= end.x and 0 <= new_pos.y <= end.y and new_pos not in walls and new_pos not in closed:
                     closed.add(new_pos)
                     next.append(new_pos)

@@ -59,18 +59,11 @@ class Vector2D:
         else:
             return Vector2D(self.x%other, self.y%other)
 
-    def rot90(self, n=1):
-        # y axis points downwards -> clockwise
-        # y axis points upwards -> anticlockwise
-        match n % 4:
-            case 0:
-                return self
-            case 1:
-                return Vector2D(-self.y, self.x)
-            case 2:
-                return Vector2D(-self.x, -self.y)
-            case 3:
-                return Vector2D(self.y, -self.x)
+    def rotate_left(self):
+        return Vector2D(self.y, -self.x)
+
+    def rotate_right(self):
+        return Vector2D(-self.y, self.x)
 
     def dot(self, other):
         return self.x*other.x + self.y*other.y
@@ -79,8 +72,11 @@ class Vector2D:
         return self.x*other.y - self.y*other.x
 
     @staticmethod
-    def parse(s, sep=','):
-        return Vector2D(*map(int, s.split(sep)))
+    def parse(s):
+        return Vector2D(*map(int, s.split(',')))
 
     def __str__(self):
         return ','.join((str(self.x), str(self.y)))
+
+    def neighbours(self):
+        return (Vector2D(self.x, self.y - 1), Vector2D(self.x + 1, self.y), Vector2D(self.x, self.y + 1), Vector2D(self.x - 1, self.y))
