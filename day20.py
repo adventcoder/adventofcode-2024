@@ -1,6 +1,5 @@
 from aoc import get_input, submit
 from utils import Vector2D
-from collections import Counter
 
 def find_path(grid):
     for y, row in enumerate(grid):
@@ -18,7 +17,16 @@ def find_path(grid):
     path.append(end)
     return path
 
-def find_cheats(grid, max_radius):
+def find_cheats_slow(grid, max_cheat_time):
+    path = find_path(grid)
+    for t1 in range(len(path)):
+        for t2 in range(t1 + 1, len(path)):
+            normal_time = t2 - t1
+            cheat_time = abs(path[t2] - path[t1])
+            if cheat_time <= max_cheat_time and cheat_time < normal_time:
+                yield path[t1], path[t2], normal_time - cheat_time
+
+def find_cheats_still_slow(grid, max_cheat_time):
     path = find_path(grid)
 
     normal_times = {}
@@ -26,12 +34,12 @@ def find_cheats(grid, max_radius):
         normal_times[pos] = time
 
     for start in path:
-        for radius in range(2, max_radius + 1):
-            for end in boundary(start, radius):
-                if end in normal_times and normal_times[end] > normal_times[start]:
-                    saving = (normal_times[end] - normal_times[start]) - radius
-                    if saving > 0:
-                        yield start, end, saving
+        for cheat_time in range(2, max_cheat_time + 1):
+            for end in boundary(start, cheat_time):
+                if end in normal_times:
+                    normal_time = normal_times[end] - normal_times[start]
+                    if cheat_time < normal_time:
+                        yield start, end, normal_time - cheat_time
 
 def boundary(origin, radius):
     for i in range(1, radius + 1):
@@ -41,38 +49,5 @@ def boundary(origin, radius):
         yield Vector2D(origin.x - radius + i, origin.y - i)
 
 grid = get_input(20).splitlines()
-# grid = '''###############
-# #...#...#.....#
-# #.#.#.#.#.###.#
-# #S#...#.#.#...#
-# #######.#.#.###
-# #######.#.#...#
-# #######.#.###.#
-# ###..E#...#...#
-# ###.#######.###
-# #...###...#...#
-# #.#####.#.###.#
-# #.#...#.#.#...#
-# #.#.#.#.#.#.###
-# #...#...#...###
-# ###############
-# '''.splitlines()
-
-# for start, end, saving in find_cheats(grid, 2):
-#     if saving == 2:
-#         new_grid = [list(row) for row in grid]
-#         new_grid[start.y][start.x] = '0'
-#         new_grid[end.y][end.x] = '2'
-#         for row in new_grid:
-#             print(''.join(row))
-#         input()
-# quit()
-
-# counts = Counter()
-# for start, end, saving in find_cheats(grid, 20):
-#     counts[saving] += 1
-# for saving in sorted(counts):
-#     print('There are', counts[saving], 'cheats that save', saving, 'picoseconds.')
-
-submit(sum(saving >= 100 for _, _, saving in find_cheats(grid, 2)))
-submit(sum(saving >= 100 for _, _, saving in find_cheats(grid, 20)))
+submit(sum(saving >= 100 for _, _, saving in find_cheats_still_slow(grid, 2)))
+submit(sum(saving >= 100 for _, _, saving in find_cheats_still_slow(grid, 20)))
