@@ -18,7 +18,7 @@ def find_triangles(graph):
                     result.add(','.join(sorted([a, b, c])))
     return result
 
-# copied from wikipedia, whatever...
+# Bron–Kerbosch algorithm copied from wikipedia, whatever...
 def find_cliques(graph):
     def recur(R, P, X):
         if not P and not X:
