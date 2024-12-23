@@ -20,16 +20,15 @@ def find_triangles(graph):
 
 # Bron–Kerbosch algorithm copied from wikipedia, whatever...
 def find_cliques(graph):
-    def recur(R, P, X):
-        if not P and not X:
+    def recur(R, P):
+        if not P:
             return [','.join(sorted(R))]
         result = []
         for v in list(P):
-            result.extend(recur(R + [v], P & graph[v], X & graph[v]))
+            result.extend(recur(R + [v], P & graph[v]))
             P.remove(v)
-            X.add(v)
         return result
-    return recur([], set(graph.keys()), set())
+    return recur([], set(graph.keys()))
 
 input = get_input(23)
 graph = parse_graph(input)
