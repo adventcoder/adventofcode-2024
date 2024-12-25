@@ -5,24 +5,16 @@ keys = []
 
 for section in get_input(25).split('\n\n'):
     grid = section.splitlines()
+    mask = 0
+    for row in grid[1:-1]:
+        for c in row:
+            mask = (mask << 1) | int(c == '#')
     if '#' in grid[0]:
-        lock = []
-        for x in range(5):
-            y = 0
-            while grid[y+1][x] == '#':
-                y += 1
-            lock.append(y)
-        locks.append(lock)
-    elif '#' in grid[-1]:
-        key = []
-        for x in range(5):
-            y = 0
-            while grid[5-y][x] == '#':
-                y += 1
-            key.append(y)
-        keys.append(key)
+        locks.append(mask)
+    if '#' in grid[-1]:
+        keys.append(mask)
 
 def fits(lock, key):
-    return all(a + b <= 5 for a, b in zip(lock, key))
+    return lock & key == 0
 
 submit(sum(fits(lock, key) for lock in locks for key in keys))
